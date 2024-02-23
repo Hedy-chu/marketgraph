@@ -1,0 +1,38 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: nftMarket
+    network: sepolia
+    source:
+      address: "0x83714Fc2fbE48bEca2c8e4290611a0EdCDa61750"
+      abi: nftMarket
+      startBlock: 5345530
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - EIP712DomainChanged
+        - OwnershipTransferred
+        - buy
+        - buyWithWL
+        - listToken
+      abis:
+        - name: nftMarket
+          file: ./abis/nftMarket.json
+      eventHandlers:
+        - event: EIP712DomainChanged()
+          handler: handleEIP712DomainChanged
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: buy(address,address,uint256,uint256)
+          handler: handlebuy
+        - event: buyWithWL(address,uint256,uint256)
+          handler: handlebuyWithWL
+        - event: listToken(address,uint256,uint256)
+          handler: handlelistToken
+      file: ./src/nft-market.ts
