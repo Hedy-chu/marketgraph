@@ -10,7 +10,8 @@ import {
   OwnershipTransferred,
   buy,
   buyWithWL,
-  listToken
+  listToken,
+  NftTracer  // 新增表
 } from "../generated/schema"
 
 export function handleEIP712DomainChanged(
@@ -55,6 +56,19 @@ export function handlebuy(event: buyEvent): void {
   entity.transactionHash = event.transaction.hash
 
   entity.save()
+
+  // 新增处理内容
+  let nftId = event.address.toHex() + '-' + event.params.tokenId.toString();
+
+  // // string to bytes
+  let holder = NftTracer.load(nftId);
+  if (holder == null) {
+    holder = new NftTracer(nftId);
+  }
+  holder.tokenId = event.params.tokenId;
+  holder.owner = event.params.buyer;
+  holder.from = event.params.seller;
+  holder.save();
 }
 
 export function handlebuyWithWL(event: buyWithWLEvent): void {
@@ -85,4 +99,20 @@ export function handlelistToken(event: listTokenEvent): void {
   entity.transactionHash = event.transaction.hash
 
   entity.save()
+
+
+  // 新增的内容，处理nft owner
+  let nftId = event.address.toHex() + '-' + event.params.tokenId.toString();
+
+  // // string to bytes  
+  // 从原本的数据中加载
+  let holder = NftTracer.load(nftId);
+  if (holder == null) {
+    holder = new NftTracer(nftId);
+    holder.tokenId = event.params.tokenId;
+    holder.owner = event.params.user;
+    holder.from = event.params.user;
+    holder.save();
+  }
+  
 }

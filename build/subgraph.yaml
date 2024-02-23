@@ -2,7 +2,7 @@ specVersion: 1.0.0
 indexerHints:
   prune: auto
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: nftMarket
@@ -21,10 +21,10 @@ dataSources:
         - buy
         - buyWithWL
         - listToken
-        - NftTracer  // 新增表
+        - NftTracer
       abis:
         - name: nftMarket
-          file: ./abis/nftMarket.json
+          file: nftMarket/abis/nftMarket.json
       eventHandlers:
         - event: EIP712DomainChanged()
           handler: handleEIP712DomainChanged
@@ -36,4 +36,4 @@ dataSources:
           handler: handlebuyWithWL
         - event: listToken(address,uint256,uint256)
           handler: handlelistToken
-      file: ./src/nft-market.ts
+      file: nftMarket/nftMarket.wasm
